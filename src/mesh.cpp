@@ -25,14 +25,12 @@ auto offset_by(vertex const & lower_left)
 // return a function that inserts cell vertices into a mesh
 auto triangulate_cell_into_mesh(mesh & verts)
 {
-    return [&verts](auto const & pair) {
+    auto into_verts = std::back_inserter(verts);
+    return [into_verts](auto const & pair) {
         auto const &[lower_left, mask] = pair;
 
         // insert each vertex in the cell offset by the current lower-left
-        auto contour = contours.at(mask)
-                     | views::transform(offset_by(lower_left));
-
-        verts.insert(verts.end(), contour.begin(), {});
+        ranges::transform(contours.at(mask), into_verts, offset_by(lower_left));
     };
 }
 

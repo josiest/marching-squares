@@ -33,7 +33,7 @@ using node_grid = std::unordered_map<point, node::mask>;
 // get the bottom-left and upper-right bounding corners of a pointset
 std::pair<point, point> bounds(pointset const & points);
 
-// compute a node from a point's surrounding neighbors
+// compute a control node bit-mask from a point's surrounding neighbors
 node::mask neighbors(pointset const & points, point const & cell_ll);
 
 // create a grid of nodes from a pointset

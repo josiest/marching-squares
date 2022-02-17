@@ -28,16 +28,16 @@ node::mask neighbors(pointset const & points, point const & cell_ll)
     node::mask bits;
 
     point const cell_ul = point::above(cell_ll);
-    if (points.contains(cell_ll)) {
+    if (not points.contains(cell_ll)) {
         bits |= node::upper_left;
     }
-    if (points.contains(point::right(cell_ul))) {
+    if (not points.contains(point::right(cell_ul))) {
         bits |= node::upper_right;
     }
-    if (points.contains(point::right(cell_ll))) {
+    if (not points.contains(point::right(cell_ll))) {
         bits |= node::lower_right;
     }
-    if (points.contains(cell_ul)) {
+    if (not points.contains(cell_ul)) {
         bits |= node::lower_left;
     }
     return bits;
@@ -46,12 +46,8 @@ node::mask neighbors(pointset const & points, point const & cell_ll)
 node_grid make_grid(pointset const & points)
 {
     auto const [ll, ur] = bounds(points);
-    int const width = ur.x - ll.x - 1;
-    int const height = ur.y - ll.y - 1;
-
-    if (width == 0) {
-        return {};
-    }
+    int const width = ur.x - ll.x;
+    int const height = ur.y - ll.y;
 
     // compute a point from an index
     auto cell_from_index = [&ll, width](int i) {
@@ -64,7 +60,7 @@ node_grid make_grid(pointset const & points)
     };
 
     // compute the node points from the full cartesian product of indices
-    auto nodes = views::iota(width*height)
+    auto nodes = views::iota(0, width*height)
                | views::transform(cell_from_index);
 
     // compute the neighbors at each point and return the respective grid
